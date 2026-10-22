@@ -16,19 +16,9 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
             padding: 0;
         }
 
-        html {
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        html::-webkit-scrollbar {
-            width: 0;
-            height: 0;
-            display: none;
-        }
-
         body {
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -124,8 +114,7 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
             box-shadow: 0 0 0 3px rgba(79, 70, 229, .15);
         }
 
-        .control input[type="password"],
-        .control input.con-clave {
+        .control input[type="password"] {
             padding-right: 40px;
         }
 
@@ -154,6 +143,10 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
         .ver-clave svg {
             width: 18px;
             height: 18px;
+        }
+
+        .oculto {
+            display: none !important;
         }
 
         .error-campo {
@@ -191,6 +184,14 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
             border: 1px solid transparent;
             cursor: pointer;
             transition: background .15s, border-color .15s, color .15s;
+        }
+
+        a.btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+            text-decoration: none;
         }
 
         .btn:focus-visible {
@@ -282,9 +283,10 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
                         maxlength="30"
                         required
                         autofocus
+                        aria-describedby="error-usuario"
                     >
                 </div>
-                <p class="error-campo" data-error-for="usuario">Ingresa un nombre de usuario de al menos 3 caracteres.</p>
+                <p class="error-campo" id="error-usuario" data-error-for="usuario">Ingresa un nombre de usuario de al menos 3 caracteres.</p>
             </div>
 
             <div class="campo" data-campo="telefono">
@@ -301,9 +303,10 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
                         pattern="[0-9+()\-\s]{7,20}"
                         maxlength="20"
                         required
+                        aria-describedby="error-telefono"
                     >
                 </div>
-                <p class="error-campo" data-error-for="telefono">Ingresa un teléfono válido de 7 a 20 dígitos.</p>
+                <p class="error-campo" id="error-telefono" data-error-for="telefono">Ingresa un teléfono válido de 7 a 20 dígitos.</p>
             </div>
 
             <div class="campo" data-campo="email">
@@ -318,9 +321,10 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
                         autocomplete="email"
                         maxlength="120"
                         required
+                        aria-describedby="error-email"
                     >
                 </div>
-                <p class="error-campo" data-error-for="email">Ingresa un correo electrónico válido.</p>
+                <p class="error-campo" id="error-email" data-error-for="email">Ingresa un correo electrónico válido.</p>
             </div>
 
             <div class="campo" data-campo="password">
@@ -334,15 +338,22 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
                         autocomplete="new-password"
                         minlength="8"
                         required
+                        aria-describedby="error-password"
                     >
-                    <button type="button" class="ver-clave" data-objetivo="password" aria-label="Mostrar contraseña" title="Mostrar contraseña">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <button type="button" class="ver-clave" data-objetivo="password" aria-label="Mostrar contraseña" title="Mostrar contraseña" aria-pressed="false">
+                        <svg class="ojo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
                             <circle cx="12" cy="12" r="3"/>
                         </svg>
+                        <svg class="ojo-tachado oculto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M17.9 17.9A10.6 10.6 0 0 1 12 19c-6.5 0-10-7-10-7a18.8 18.8 0 0 1 4.1-5.1"/>
+                            <path d="M9.9 5.2A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a18.9 18.9 0 0 1-2.3 3.3"/>
+                            <path d="M14.1 14.1a3 3 0 0 1-4.2-4.2"/>
+                            <path d="M3 3l18 18"/>
+                        </svg>
                     </button>
                 </div>
-                <p class="error-campo" data-error-for="password">La contraseña debe tener al menos 8 caracteres.</p>
+                <p class="error-campo" id="error-password" data-error-for="password">La contraseña debe tener al menos 8 caracteres.</p>
             </div>
 
             <div class="campo" data-campo="confirmar_password">
@@ -356,20 +367,27 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
                         autocomplete="new-password"
                         minlength="8"
                         required
+                        aria-describedby="error-confirmar_password"
                     >
-                    <button type="button" class="ver-clave" data-objetivo="confirmar_password" aria-label="Mostrar contraseña" title="Mostrar contraseña">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <button type="button" class="ver-clave" data-objetivo="confirmar_password" aria-label="Mostrar contraseña" title="Mostrar contraseña" aria-pressed="false">
+                        <svg class="ojo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
                             <circle cx="12" cy="12" r="3"/>
                         </svg>
+                        <svg class="ojo-tachado oculto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M17.9 17.9A10.6 10.6 0 0 1 12 19c-6.5 0-10-7-10-7a18.8 18.8 0 0 1 4.1-5.1"/>
+                            <path d="M9.9 5.2A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a18.9 18.9 0 0 1-2.3 3.3"/>
+                            <path d="M14.1 14.1a3 3 0 0 1-4.2-4.2"/>
+                            <path d="M3 3l18 18"/>
+                        </svg>
                     </button>
                 </div>
-                <p class="error-campo" data-error-for="confirmar_password">Las contraseñas no coinciden.</p>
+                <p class="error-campo" id="error-confirmar_password" data-error-for="confirmar_password">Las contraseñas no coinciden.</p>
             </div>
 
             <div class="acciones">
-                <button type="submit" class="btn btn-ok">OK</button>
-                <button type="button" class="btn btn-cancelar" id="btnCancelar">Cancelar</button>
+                <button type="submit" class="btn btn-ok">Crear cuenta</button>
+                <a class="btn btn-cancelar" href="index.php?controller=login">Cancelar</a>
             </div>
         </form>
 
@@ -381,10 +399,10 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
     <script>
         (function () {
             const formulario = document.getElementById('formRegistro');
-            const cancelar = document.getElementById('btnCancelar');
             const campos = {
                 usuario: document.getElementById('usuario'),
                 telefono: document.getElementById('telefono'),
+                email: document.getElementById('email'),
                 password: document.getElementById('password'),
                 confirmar_password: document.getElementById('confirmar_password')
             };
@@ -396,6 +414,12 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
             function marcar(campo, invalido) {
                 const caja = contenedor(campo);
                 if (caja) caja.classList.toggle('invalido', invalido);
+
+                if (invalido) {
+                    campo.setAttribute('aria-invalid', 'true');
+                } else {
+                    campo.removeAttribute('aria-invalid');
+                }
             }
 
             function validarUsuario() {
@@ -411,6 +435,13 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
                 return valido;
             }
 
+            function validarEmail() {
+                const valor = campos.email.value.trim();
+                const valido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valor);
+                marcar(campos.email, !valido);
+                return valido;
+            }
+
             function validarPassword() {
                 const valido = campos.password.value.length >= 8;
                 marcar(campos.password, !valido);
@@ -418,25 +449,50 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
             }
 
             function validarConfirmacion() {
-                const valido = campos.confirmar_password.value.length >= 8 &&
-                    campos.confirmar_password.value === campos.password.value;
+                const caja = contenedor(campos.confirmar_password);
+                const error = caja.querySelector('.error-campo');
+                const valor = campos.confirmar_password.value;
+
+                let valido = true;
+                let mensaje = '';
+
+                if (valor.length < 8) {
+                    valido = false;
+                    mensaje = 'La contraseña debe tener al menos 8 caracteres.';
+                } else if (valor !== campos.password.value) {
+                    valido = false;
+                    mensaje = 'Las contraseñas no coinciden.';
+                }
+
+                error.textContent = mensaje || 'Las contraseñas no coinciden.';
                 marcar(campos.confirmar_password, !valido);
                 return valido;
             }
 
-            campos.usuario.addEventListener('blur', validarUsuario);
-            campos.telefono.addEventListener('blur', validarTelefono);
-            campos.password.addEventListener('blur', validarPassword);
-            campos.confirmar_password.addEventListener('blur', validarConfirmacion);
+            // Validar al salir del campo y revalidar mientras se escribe
+            const validadores = {
+                usuario: validarUsuario,
+                telefono: validarTelefono,
+                email: validarEmail,
+                password: validarPassword,
+                confirmar_password: validarConfirmacion
+            };
 
-            campos.password.addEventListener('input', function () {
-                if (contenedor(campos.password).classList.contains('invalido')) {
-                    validarPassword();
-                }
+            Object.keys(validadores).forEach(function (nombre) {
+                const campo = campos[nombre];
+                campo.addEventListener('blur', validadores[nombre]);
+                campo.addEventListener('input', function () {
+                    const caja = contenedor(campo);
+                    if (caja && caja.classList.contains('invalido')) {
+                        validadores[nombre]();
+                    }
+                });
             });
 
-            campos.confirmar_password.addEventListener('input', function () {
-                if (contenedor(campos.confirmar_password).classList.contains('invalido')) {
+            // Al cambiar la contraseña, revisar también la confirmación si ya tenía contenido
+            campos.password.addEventListener('input', function () {
+                if (campos.confirmar_password.value !== '' &&
+                    contenedor(campos.confirmar_password).classList.contains('invalido')) {
                     validarConfirmacion();
                 }
             });
@@ -446,9 +502,14 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
                 boton.addEventListener('click', function () {
                     const input = document.getElementById(boton.dataset.objetivo);
                     const mostrar = input.type === 'password';
+
                     input.type = mostrar ? 'text' : 'password';
+                    boton.setAttribute('aria-pressed', String(mostrar));
                     boton.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
                     boton.setAttribute('title', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
+                    boton.querySelector('.ojo').classList.toggle('oculto', mostrar);
+                    boton.querySelector('.ojo-tachado').classList.toggle('oculto', !mostrar);
+                    input.focus();
                 });
             });
 
@@ -456,6 +517,7 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
                 const resultados = [
                     validarUsuario(),
                     validarTelefono(),
+                    validarEmail(),
                     validarPassword(),
                     validarConfirmacion()
                 ];
@@ -464,14 +526,6 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
                     evento.preventDefault();
                     const primerError = formulario.querySelector('.campo.invalido input');
                     if (primerError) primerError.focus();
-                }
-            });
-
-            cancelar.addEventListener('click', function () {
-                if (window.history.length > 1) {
-                    window.history.back();
-                } else {
-                    window.location.href = 'index.php?controller=login';
                 }
             });
         })();
