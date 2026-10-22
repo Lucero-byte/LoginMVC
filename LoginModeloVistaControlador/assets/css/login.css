@@ -62,7 +62,6 @@ a:hover {
     text-decoration: underline;
 }
 
-/* ----------------------------- Estructura ----------------------------- */
 
 .login-shell {
     width: min(500px, 100%);
@@ -73,7 +72,6 @@ a:hover {
     box-shadow: var(--shadow-card);
 }
 
-/* ----------------------------- Formulario ----------------------------- */
 
 .form-panel {
     display: flex;

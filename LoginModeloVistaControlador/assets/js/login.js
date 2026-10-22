@@ -1,9 +1,6 @@
 /* =========================================================
-   Validación del inicio de sesión (etapa front-end)
-   ---------------------------------------------------------
-   Cuando conecten el backend:
-   1. Quiten el atributo data-demo del formulario en login.php.
-   2. Mantengan este archivo para validar antes de enviar.
+   Validación del inicio de sesión.
+   Valida en el navegador antes de enviar al controlador.
    ========================================================= */
 
 (function () {
@@ -128,24 +125,8 @@
             return;
         }
 
-        // Mientras no exista backend, simulamos la respuesta.
-        // Al conectar la base de datos, eliminen data-demo en login.php
-        // y este bloque dejará de ejecutarse.
-        if (form.dataset.demo === "true") {
-            event.preventDefault();
-
-            btnSubmit.disabled = true;
-            btnSubmit.classList.add("is-loading");
-            hideAlert();
-
-            window.setTimeout(function () {
-                btnSubmit.disabled = false;
-                btnSubmit.classList.remove("is-loading");
-                showAlert(
-                    "success",
-                    "Datos válidos. La conexión con el servidor se agregará cuando el equipo defina la base de datos."
-                );
-            }, 900);
-        }
+        // Datos válidos: se envía al controlador y se muestra el estado de carga.
+        btnSubmit.disabled = true;
+        btnSubmit.classList.add("is-loading");
     });
 })();

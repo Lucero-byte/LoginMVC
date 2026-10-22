@@ -1,20 +1,13 @@
 <?php
 /**
- * Vista de inicio de sesión (front-end).
- * Los enlaces a registro.php y recuperar.php corresponden a las partes
- * que desarrollan los demás integrantes del equipo.
+ * Vista de inicio de sesión.
  */
+require_once __DIR__ . '/partials/urls.php';
 
-$docRoot    = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: '');
-$viewDir    = str_replace('\\', '/', __DIR__);
-$projectDir = dirname($viewDir, 2);
-
-$basePath = ($docRoot !== '' && str_starts_with($viewDir, $docRoot))
-    ? str_replace($docRoot, '', $projectDir)
-    : '../..';
-
-$assetsUrl = rtrim($basePath, '/') . '/assets';
-$viewsUrl  = rtrim($basePath, '/') . '/app/Views';
+$errores      = $errores ?? [];
+$datos        = $datos ?? [];
+$mensajeExito = $mensajeExito ?? '';
+$correo       = htmlspecialchars($datos['correo'] ?? '', ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -24,7 +17,7 @@ $viewsUrl  = rtrim($basePath, '/') . '/app/Views';
     <meta name="description" content="Inicio de sesión del sistema">
     <meta name="theme-color" content="#4f46e5">
     <title>Iniciar sesión</title>
-    <link rel="stylesheet" href="<?= htmlspecialchars($assetsUrl, ENT_QUOTES, 'UTF-8') ?>/css/login.css">
+    <link rel="stylesheet" href="<?= $assetUrl('css/login.css') ?>">
 </head>
 <body>
     <main class="login-shell">
@@ -38,6 +31,27 @@ $viewsUrl  = rtrim($basePath, '/') . '/app/Views';
                     <p class="form-subtitle">Usa el correo y la contraseña con los que te registraste.</p>
                 </header>
 
+                <?php if ($mensajeExito !== ''): ?>
+                    <div class="form-alert form-alert--success" role="status">
+                        <svg class="form-alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M8.5 12.5l2.3 2.3 4.7-5"></path>
+                        </svg>
+                        <span><?= htmlspecialchars($mensajeExito, ENT_QUOTES, 'UTF-8') ?></span>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($errores)): ?>
+                    <div class="form-alert form-alert--error" role="alert">
+                        <svg class="form-alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 8v4"></path>
+                            <path d="M12 16h.01"></path>
+                        </svg>
+                        <span><?= htmlspecialchars(implode(' ', $errores), ENT_QUOTES, 'UTF-8') ?></span>
+                    </div>
+                <?php endif; ?>
+
                 <div class="form-alert" id="formAlert" role="alert" hidden>
                     <svg class="form-alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <circle cx="12" cy="12" r="9"></circle>
@@ -47,9 +61,7 @@ $viewsUrl  = rtrim($basePath, '/') . '/app/Views';
                     <span id="formAlertText"></span>
                 </div>
 
-                <!-- data-demo="true" simula el envío mientras no exista backend.
-                     Cuando conecten la base de datos, quiten ese atributo. -->
-                <form id="loginForm" action="" method="post" novalidate data-demo="true">
+                <form id="loginForm" action="<?= $url('?controller=login&action=autenticar') ?>" method="post" novalidate>
 
                     <div class="field">
                         <label for="correo">Correo electrónico</label>
@@ -62,10 +74,12 @@ $viewsUrl  = rtrim($basePath, '/') . '/app/Views';
                                 type="email"
                                 id="correo"
                                 name="correo"
+                                value="<?= $correo ?>"
                                 placeholder="tucorreo@ejemplo.com"
                                 autocomplete="email"
                                 inputmode="email"
                                 required
+                                autofocus
                                 aria-describedby="correoError"
                             >
                         </div>
@@ -115,7 +129,7 @@ $viewsUrl  = rtrim($basePath, '/') . '/app/Views';
                             <span class="checkbox__label">Recordarme</span>
                         </label>
 
-                        <a class="link-muted" href="<?= htmlspecialchars($viewsUrl, ENT_QUOTES, 'UTF-8') ?>/recuperar.php">¿Olvidaste tu contraseña?</a>
+                        <a class="link-muted" href="<?= $url('?controller=recuperar') ?>">¿Olvidaste tu contraseña?</a>
                     </div>
 
                     <button type="submit" class="btn-submit" id="btnSubmit">
@@ -126,7 +140,7 @@ $viewsUrl  = rtrim($basePath, '/') . '/app/Views';
 
                 <p class="form-register">
                     ¿Aún no tienes cuenta?
-                    <a href="<?= htmlspecialchars($viewsUrl, ENT_QUOTES, 'UTF-8') ?>/registro.php">Crear una cuenta</a>
+                    <a href="<?= $url('?controller=registro') ?>">Crear una cuenta</a>
                 </p>
 
                 <p class="form-legal">Al continuar aceptas las políticas de uso del sistema.</p>
@@ -134,6 +148,6 @@ $viewsUrl  = rtrim($basePath, '/') . '/app/Views';
         </section>
     </main>
 
-    <script src="<?= htmlspecialchars($assetsUrl, ENT_QUOTES, 'UTF-8') ?>/js/login.js"></script>
+    <script src="<?= $assetUrl('js/login.js') ?>"></script>
 </body>
 </html>

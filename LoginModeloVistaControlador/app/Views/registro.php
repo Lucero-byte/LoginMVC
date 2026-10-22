@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/partials/urls.php';
+
 $datos   = $datos ?? [];
 $errores = $errores ?? [];
 $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?? '', ENT_QUOTES, 'UTF-8');
@@ -268,7 +270,7 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
             </div>
         <?php endif; ?>
 
-        <form id="formRegistro" method="post" action="index.php?controller=registro&amp;action=guardar" novalidate>
+        <form id="formRegistro" method="post" action="<?= $url('?controller=registro&action=guardar') ?>" novalidate>
             <div class="campo" data-campo="usuario">
                 <label for="usuario">Nombre de usuario</label>
                 <div class="control">
@@ -297,7 +299,7 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
                         id="telefono"
                         name="telefono"
                         value="<?= $valor('telefono') ?>"
-                        placeholder="Ej: +52 55 1234 5678"
+                        placeholder="Ej: +51 999 123 456"
                         autocomplete="tel"
                         inputmode="tel"
                         pattern="[0-9+()\-\s]{7,20}"
@@ -387,12 +389,12 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
 
             <div class="acciones">
                 <button type="submit" class="btn btn-ok">Crear cuenta</button>
-                <a class="btn btn-cancelar" href="index.php?controller=login">Cancelar</a>
+                <a class="btn btn-cancelar" href="<?= $url('?controller=login') ?>">Cancelar</a>
             </div>
         </form>
 
         <p class="pie">
-            ¿Ya tienes cuenta? <a href="index.php?controller=login">Inicia sesión</a>
+            ¿Ya tienes cuenta? <a href="<?= $url('?controller=login') ?>">Inicia sesión</a>
         </p>
     </main>
 
@@ -480,7 +482,13 @@ $valor   = static fn(string $campo): string => htmlspecialchars($datos[$campo] ?
 
             Object.keys(validadores).forEach(function (nombre) {
                 const campo = campos[nombre];
-                campo.addEventListener('blur', validadores[nombre]);
+                // No marcar como inválido al salir de un campo vacío:
+                // evita advertencias al pulsar "Cancelar" o "Inicia sesión".
+                campo.addEventListener('blur', function () {
+                    if (campo.value.trim() !== '' || contenedor(campo).classList.contains('invalido')) {
+                        validadores[nombre]();
+                    }
+                });
                 campo.addEventListener('input', function () {
                     const caja = contenedor(campo);
                     if (caja && caja.classList.contains('invalido')) {
